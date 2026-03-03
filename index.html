@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard — Tarifas/Taxas Itaú (Unidade)</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">GT</div>
+      <div class="titles">
+        <h1>Tarifas/Taxas Itaú — São Cristóvão</h1>
+        <p class="subtitle">Filtro por período e por tipo de despesa (denominação). Carrega dados via CSV público.</p>
+      </div>
+    </div>
+    <div class="right">
+      <a class="btn ghost" href="#" id="btnReload">Recarregar</a>
+      <a class="btn" href="#" id="btnExport">Exportar CSV (resumo)</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card controls">
+      <div class="grid">
+        <div class="field">
+          <label for="csvUrl">CSV_URL (dados)</label>
+          <input id="csvUrl" type="url" placeholder="Cole aqui o link CSV público do Google Sheets (ou arquivo .csv em GitHub Pages)" />
+          <div class="hint">Dica: publique uma aba do Google Sheets como CSV e cole o link aqui. (README explica)</div>
+        </div>
+
+        <div class="field">
+          <label for="preset">Período (atalho)</label>
+          <select id="preset">
+            <option value="custom">Personalizado</option>
+            <option value="3m">Últimos 3 meses</option>
+            <option value="6m">Últimos 6 meses</option>
+            <option value="12m">Últimos 12 meses</option>
+            <option value="ytd">Ano atual (YTD)</option>
+            <option value="all">Tudo</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="startDate">Data inicial</label>
+          <input id="startDate" type="date" />
+        </div>
+
+        <div class="field">
+          <label for="endDate">Data final</label>
+          <input id="endDate" type="date" />
+        </div>
+
+        <div class="field">
+          <label for="denoms">Despesas (denominação)</label>
+          <select id="denoms" multiple></select>
+          <div class="hint">Ctrl/⌘ para selecionar múltiplas.</div>
+        </div>
+
+        <div class="field">
+          <label for="threshold">“Acima da curva” (× mediana 3m)</label>
+          <input id="threshold" type="range" min="1.05" max="2.00" step="0.05" value="1.20" />
+          <div class="hint"><span id="thresholdLabel">1.20×</span></div>
+        </div>
+      </div>
+
+      <div class="row actions">
+        <button class="btn" id="btnApply">Aplicar filtros</button>
+        <button class="btn ghost" id="btnReset">Limpar filtros</button>
+        <div class="status" id="status"></div>
+      </div>
+    </section>
+
+    <section class="grid2">
+      <section class="card">
+        <div class="cardhead">
+          <h2>Total mensal (todas as denominações selecionadas)</h2>
+          <div class="pill" id="totalPill">—</div>
+        </div>
+        <canvas id="chartTotal" height="120"></canvas>
+        <div class="legendNote">Linha: Total mensal | Linha tracejada: mediana móvel (3 meses). Meses acima do limiar aparecem na tabela abaixo.</div>
+      </section>
+
+      <section class="card">
+        <div class="cardhead">
+          <h2>Evolução por denominação</h2>
+          <div class="pill" id="denomPill">—</div>
+        </div>
+        <canvas id="chartDenom" height="120"></canvas>
+        <div class="legendNote">Cada série = uma denominação. Use o filtro para reduzir.</div>
+      </section>
+    </section>
+
+    <section class="card">
+      <div class="cardhead">
+        <h2>Resumo mensal (heatmap)</h2>
+        <div class="pill">Valores em R$ (positivos)</div>
+      </div>
+      <div class="tableWrap">
+        <table id="tblResumo">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="grid2">
+      <section class="card">
+        <div class="cardhead">
+          <h2>Meses “acima da curva”</h2>
+          <div class="pill">Total mensal</div>
+        </div>
+        <div class="tableWrap small">
+          <table id="tblOutliers">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="cardhead">
+          <h2>Detalhamento (lançamentos filtrados)</h2>
+          <div class="pill" id="countPill">—</div>
+        </div>
+        <div class="tableWrap small">
+          <table id="tblDetalhe">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <footer class="footer">
+      <div>Feito para análise de tarifas/taxas. Ajuste as regras de classificação em <code>app.js</code> (função <code>categorize()</code>).</div>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
