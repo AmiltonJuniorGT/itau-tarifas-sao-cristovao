@@ -13,7 +13,7 @@
       <div class="logo">GT</div>
       <div class="titles">
         <h1>Tarifas/Taxas Itaú — Multiunidade</h1>
-        <div class="subtitle">Pivot mensal (Denominação + meses). Selecione uma ou mais unidades no topo.</div>
+        <div class="subtitle">Pivot mensal (Denominação + meses). Selecione 1+ unidades no topo.</div>
       </div>
     </div>
 
@@ -27,7 +27,6 @@
 
   <div class="container">
 
-    <!-- CONTROLES -->
     <div class="card controls">
       <div class="cardhead">
         <h2>Filtros</h2>
@@ -35,12 +34,20 @@
       </div>
 
       <div class="grid">
+        <!-- UNIDADES (dropdown multi-select) -->
         <div class="field">
-          <label for="units">Unidades (multi)</label>
-          <select id="units" multiple></select>
-          <div class="hint">Ctrl/⌘ para múltiplas. Salva na URL: <code>?u=SC,NOVA</code></div>
+          <label>Unidades</label>
+          <div class="msel" id="unitsWidget">
+            <button class="mselBtn" id="unitsBtn" type="button">
+              <span id="unitsBtnText">—</span>
+              <span class="mselCaret">▾</span>
+            </button>
+            <div class="mselMenu" id="unitsMenu" aria-hidden="true"></div>
+          </div>
+          <div class="hint">Escolha 1+ unidades. Salva na URL: <code>?u=SC,CAJ,CAM</code></div>
         </div>
 
+        <!-- MODO -->
         <div class="field">
           <label for="mode">Modo</label>
           <select id="mode">
@@ -81,7 +88,7 @@
         <div class="field" style="grid-column: 1 / -1;">
           <label for="denoms">Despesas (denominação)</label>
           <select id="denoms" multiple></select>
-          <div class="hint">Filtra as linhas (denominações). Use Ctrl/⌘ para múltiplas.</div>
+          <div class="hint">Filtra as denominações (linhas). Ctrl/⌘ para múltiplas.</div>
         </div>
       </div>
 
@@ -92,7 +99,6 @@
       </div>
     </div>
 
-    <!-- GRÁFICOS -->
     <div class="grid2">
       <div class="card">
         <div class="cardhead">
@@ -100,9 +106,7 @@
           <span class="pill" id="totalPill">—</span>
         </div>
         <canvas id="chartTotal" height="120"></canvas>
-        <div class="legendNote">
-          <span id="noteTotal">Consolidado: Total vs Mediana 3m</span>
-        </div>
+        <div class="legendNote"><span id="noteTotal">—</span></div>
       </div>
 
       <div class="card">
@@ -111,21 +115,17 @@
           <span class="pill" id="denomPill">—</span>
         </div>
         <canvas id="chartDenom" height="120"></canvas>
-        <div class="legendNote">Top 10 denominações por total no período (consolidado quando multiunidade).</div>
+        <div class="legendNote">Top 10 denominações por total no período (base consolidada).</div>
       </div>
     </div>
 
-    <!-- TABELAS -->
     <div class="card" style="margin-top:12px;">
       <div class="cardhead">
         <h2>Resumo mensal (heatmap)</h2>
         <span class="pill">Valores em R$ (positivos)</span>
       </div>
       <div class="tableWrap">
-        <table id="tblResumo">
-          <thead></thead>
-          <tbody></tbody>
-        </table>
+        <table id="tblResumo"><thead></thead><tbody></tbody></table>
       </div>
     </div>
 
@@ -136,10 +136,7 @@
           <span class="pill">Total mensal</span>
         </div>
         <div class="tableWrap small">
-          <table id="tblOutliers">
-            <thead></thead>
-            <tbody></tbody>
-          </table>
+          <table id="tblOutliers"><thead></thead><tbody></tbody></table>
         </div>
       </div>
 
@@ -149,17 +146,14 @@
           <span class="pill" id="countPill">—</span>
         </div>
         <div class="tableWrap small">
-          <table id="tblDetalhe">
-            <thead></thead>
-            <tbody></tbody>
-          </table>
+          <table id="tblDetalhe"><thead></thead><tbody></tbody></table>
         </div>
       </div>
     </div>
 
     <div class="footer">
-      Modelo esperado: <code>Denominação | YYYY-MM | YYYY-MM | ...</code> (valores por linha).
-      Multiunidade: 1 planilha/aba por unidade (CSV público).
+      Modelo: <code>Denominação | YYYY-MM | YYYY-MM | ...</code>.
+      Multiunidade = 1 CSV pivot público por unidade.
     </div>
   </div>
 
