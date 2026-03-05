@@ -2,33 +2,52 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dashboard — Tarifas/Taxas Itaú (Unidade)</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GT • Tarifas/Taxas Itaú — Multiunidade</title>
+  <link rel="stylesheet" href="./styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
-  <header class="topbar">
+  <div class="topbar">
     <div class="brand">
       <div class="logo">GT</div>
       <div class="titles">
-        <h1>Tarifas/Taxas Itaú — São Cristóvão</h1>
-        <p class="subtitle">Filtro por período e por tipo de despesa (denominação). Carrega dados via CSV público (lançamentos ou pivot mensal).</p>
+        <h1>Tarifas/Taxas Itaú — Multiunidade</h1>
+        <div class="subtitle">Pivot mensal (Denominação + meses). Selecione uma ou mais unidades no topo.</div>
       </div>
     </div>
-    <div class="right">
-      <a class="btn ghost" href="#" id="btnReload">Recarregar</a>
-      <a class="btn" href="#" id="btnExport">Exportar CSV (resumo)</a>
-    </div>
-  </header>
 
-  <main class="container">
-    <section class="card controls">
+    <div class="right">
+      <button class="btn ghost" id="btnReload">Recarregar</button>
+      <button class="btn" id="btnExport">Exportar CSV (resumo)</button>
+    </div>
+
+    <div class="theme-badge">TEMA CLARO</div>
+  </div>
+
+  <div class="container">
+
+    <!-- CONTROLES -->
+    <div class="card controls">
+      <div class="cardhead">
+        <h2>Filtros</h2>
+        <span class="pill" id="status">—</span>
+      </div>
+
       <div class="grid">
         <div class="field">
-          <label for="csvUrl">CSV_URL (dados)</label>
-          <input id="csvUrl" type="url" placeholder="Cole aqui o link CSV público do Google Sheets (ou arquivo .csv em GitHub Pages)" />
-          <div class="hint">Dica: publique uma aba do Google Sheets como CSV e cole o link aqui. (README explica)</div>
+          <label for="units">Unidades (multi)</label>
+          <select id="units" multiple></select>
+          <div class="hint">Ctrl/⌘ para múltiplas. Salva na URL: <code>?u=SC,NOVA</code></div>
+        </div>
+
+        <div class="field">
+          <label for="mode">Modo</label>
+          <select id="mode">
+            <option value="sum">Consolidado (somar)</option>
+            <option value="compare">Comparar (por unidade)</option>
+          </select>
+          <div class="hint">Na URL: <code>&mode=sum</code> ou <code>&mode=compare</code></div>
         </div>
 
         <div class="field">
@@ -38,7 +57,7 @@
             <option value="3m">Últimos 3 meses</option>
             <option value="6m">Últimos 6 meses</option>
             <option value="12m">Últimos 12 meses</option>
-            <option value="ytd">Ano atual (YTD)</option>
+            <option value="ytd">Ano (YTD)</option>
             <option value="all">Tudo</option>
           </select>
         </div>
@@ -54,49 +73,53 @@
         </div>
 
         <div class="field">
-          <label for="denoms">Despesas (denominação)</label>
-          <select id="denoms" multiple></select>
-          <div class="hint">Ctrl/⌘ para selecionar múltiplas.</div>
+          <label for="threshold">“Acima da curva” (× mediana 3m)</label>
+          <input id="threshold" type="range" min="1.05" max="1.60" step="0.01" value="1.20" />
+          <div class="hint"><span id="thresholdLabel">1.20×</span></div>
         </div>
 
-        <div class="field">
-          <label for="threshold">“Acima da curva” (× mediana 3m)</label>
-          <input id="threshold" type="range" min="1.05" max="2.00" step="0.05" value="1.20" />
-          <div class="hint"><span id="thresholdLabel">1.20×</span></div>
+        <div class="field" style="grid-column: 1 / -1;">
+          <label for="denoms">Despesas (denominação)</label>
+          <select id="denoms" multiple></select>
+          <div class="hint">Filtra as linhas (denominações). Use Ctrl/⌘ para múltiplas.</div>
         </div>
       </div>
 
       <div class="row actions">
         <button class="btn" id="btnApply">Aplicar filtros</button>
         <button class="btn ghost" id="btnReset">Limpar filtros</button>
-        <div class="status" id="status"></div>
+        <div class="status" id="status2"></div>
       </div>
-    </section>
+    </div>
 
-    <section class="grid2">
-      <section class="card">
+    <!-- GRÁFICOS -->
+    <div class="grid2">
+      <div class="card">
         <div class="cardhead">
-          <h2>Total mensal (todas as denominações selecionadas)</h2>
-          <div class="pill" id="totalPill">—</div>
+          <h2>Total mensal</h2>
+          <span class="pill" id="totalPill">—</span>
         </div>
         <canvas id="chartTotal" height="120"></canvas>
-        <div class="legendNote">Linha: Total mensal | Linha tracejada: mediana móvel (3 meses). Meses acima do limiar aparecem na tabela abaixo.</div>
-      </section>
+        <div class="legendNote">
+          <span id="noteTotal">Consolidado: Total vs Mediana 3m</span>
+        </div>
+      </div>
 
-      <section class="card">
+      <div class="card">
         <div class="cardhead">
-          <h2>Evolução por denominação</h2>
-          <div class="pill" id="denomPill">—</div>
+          <h2>Evolução por denominação (Top 10)</h2>
+          <span class="pill" id="denomPill">—</span>
         </div>
         <canvas id="chartDenom" height="120"></canvas>
-        <div class="legendNote">Cada série = uma denominação. Use o filtro para reduzir.</div>
-      </section>
-    </section>
+        <div class="legendNote">Top 10 denominações por total no período (consolidado quando multiunidade).</div>
+      </div>
+    </div>
 
-    <section class="card">
+    <!-- TABELAS -->
+    <div class="card" style="margin-top:12px;">
       <div class="cardhead">
         <h2>Resumo mensal (heatmap)</h2>
-        <div class="pill">Valores em R$ (positivos)</div>
+        <span class="pill">Valores em R$ (positivos)</span>
       </div>
       <div class="tableWrap">
         <table id="tblResumo">
@@ -104,13 +127,13 @@
           <tbody></tbody>
         </table>
       </div>
-    </section>
+    </div>
 
-    <section class="grid2">
-      <section class="card">
+    <div class="grid2">
+      <div class="card">
         <div class="cardhead">
           <h2>Meses “acima da curva”</h2>
-          <div class="pill">Total mensal</div>
+          <span class="pill">Total mensal</span>
         </div>
         <div class="tableWrap small">
           <table id="tblOutliers">
@@ -118,12 +141,12 @@
             <tbody></tbody>
           </table>
         </div>
-      </section>
+      </div>
 
-      <section class="card">
+      <div class="card">
         <div class="cardhead">
           <h2>Detalhamento (totais por denominação)</h2>
-          <div class="pill" id="countPill">—</div>
+          <span class="pill" id="countPill">—</span>
         </div>
         <div class="tableWrap small">
           <table id="tblDetalhe">
@@ -131,14 +154,15 @@
             <tbody></tbody>
           </table>
         </div>
-      </section>
-    </section>
+      </div>
+    </div>
 
-    <footer class="footer">
-      <div>Feito para análise de tarifas/taxas. Ajuste as regras de classificação em <code>app.js</code> (função <code>categorize()</code>).</div>
-    </footer>
-  </main>
+    <div class="footer">
+      Modelo esperado: <code>Denominação | YYYY-MM | YYYY-MM | ...</code> (valores por linha).
+      Multiunidade: 1 planilha/aba por unidade (CSV público).
+    </div>
+  </div>
 
-  <script src="app.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>
