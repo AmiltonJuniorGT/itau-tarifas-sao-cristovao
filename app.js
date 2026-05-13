@@ -13,23 +13,23 @@ const UNITS = [
   {
     key: "SC",
     name: "São Cristóvão BA",
-    csv: "https://docs.google.com/spreadsheets/d/1g9rTDldOUzgcVWKrvw1IGZ2RlhItF5gh/export?format=csv&gid=1092717054"
+    csv: "https://docs.google.com/spreadsheets/d/1g9rTDldOUzgcVWKrvw1IGZ2RlhItF5gh/gviz/tq?tqx=out:csv&gid=1092717054"
   },
   {
     key: "CAJ",
     name: "Cajazeiras BA",
-    csv: "https://docs.google.com/spreadsheets/d/1dPt6Y1Mb1Yrzb0e3Z9U7Mc0fcVBVmcHq/export?format=csv&gid=1825385594"
+    csv: "https://docs.google.com/spreadsheets/d/1dPt6Y1Mb1Yrzb0e3Z9U7Mc0fcVBVmcHq/gviz/tq?tqx=out:csv&gid=1825385594"
   },
   {
     key: "CAM",
     name: "Camaçari BA",
-    csv: "https://docs.google.com/spreadsheets/d/1d5LLNN1lShh61EHxS93vCuFKzTH3qwcM/export?format=csv&gid=551763344"
+    csv: "https://docs.google.com/spreadsheets/d/1d5LLNN1lShh61EHxS93vCuFKzTH3qwcM/gviz/tq?tqx=out:csv&gid=551763344"
   },
   {
     key: "GAMA",
     name: "Gama - DF",
-    csv: "https://docs.google.com/spreadsheets/d/19rLjRfy8HLoYY2o3DaRuNb2uNod20iLm/export?format=csv&gid=285444437"
-  },
+    csv: "https://docs.google.com/spreadsheets/d/19rLjRfy8HLoYY2o3DaRuNb2uNod20iLm/gviz/tq?tqx=out:csv&gid=285444437"
+  }
 ];
 
 /* FUNÇÕES ORGANIZAÇÃO */
