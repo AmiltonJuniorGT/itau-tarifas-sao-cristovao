@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GT • Tarifas/Taxas Itaú — Multiunidade</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">GT</div>
+      <div class="titles">
+        <h1>Tarifas/Taxas Itaú — Multiunidade</h1>
+        <div class="subtitle">Pivot mensal por unidade: Denominação + meses</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <button class="btn ghost" id="btnReload" type="button">Recarregar</button>
+      <button class="btn" id="btnExport" type="button">Exportar CSV</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card controls">
+      <div class="cardhead">
+        <h2>Filtros</h2>
+        <span class="pill" id="status">—</span>
+      </div>
+
+      <div class="grid">
+        <div class="field">
+          <label>Unidades</label>
+          <div class="msel" id="unitsWidget">
+            <button class="mselBtn" id="unitsBtn" type="button">
+              <span id="unitsBtnText">Selecione...</span>
+              <span class="mselCaret">▾</span>
+            </button>
+            <div class="mselMenu" id="unitsMenu" aria-hidden="true"></div>
+          </div>
+          <div class="hint">Selecione uma ou mais unidades.</div>
+        </div>
+
+        <div class="field">
+          <label for="mode">Modo</label>
+          <select id="mode">
+            <option value="sum">Consolidado</option>
+            <option value="compare">Comparar unidades</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="preset">Período</label>
+          <select id="preset">
+            <option value="custom">Personalizado</option>
+            <option value="3m">Últimos 3 meses</option>
+            <option value="6m">Últimos 6 meses</option>
+            <option value="12m">Últimos 12 meses</option>
+            <option value="ytd">Ano atual</option>
+            <option value="all">Tudo</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="startDate">Data inicial</label>
+          <input id="startDate" type="date" />
+        </div>
+
+        <div class="field">
+          <label for="endDate">Data final</label>
+          <input id="endDate" type="date" />
+        </div>
+
+        <div class="field">
+          <label for="threshold">Acima da curva</label>
+          <input id="threshold" type="range" min="1.05" max="1.60" step="0.01" value="1.20" />
+          <div class="hint"><span id="thresholdLabel">1.20×</span> da mediana 3m</div>
+        </div>
+
+        <div class="field denomsField">
+          <label for="denoms">Despesas / Denominação</label>
+          <select id="denoms" multiple></select>
+          <div class="hint">Use Ctrl/⌘ para selecionar múltiplas denominações.</div>
+        </div>
+      </div>
+
+      <div class="row actions">
+        <button class="btn" id="btnApply" type="button">Aplicar filtros</button>
+        <button class="btn ghost" id="btnReset" type="button">Limpar filtros</button>
+        <div class="status" id="status2"></div>
+      </div>
+    </section>
+
+    <section class="grid2">
+      <div class="card">
+        <div class="cardhead">
+          <h2>Total mensal</h2>
+          <span class="pill" id="totalPill">—</span>
+        </div>
+        <canvas id="chartTotal" height="120"></canvas>
+        <div class="legendNote"><span id="noteTotal">—</span></div>
+      </div>
+
+      <div class="card">
+        <div class="cardhead">
+          <h2>Evolução por denominação</h2>
+          <span class="pill" id="denomPill">—</span>
+        </div>
+        <canvas id="chartDenom" height="120"></canvas>
+        <div class="legendNote">Top 10 denominações por total no período.</div>
+      </div>
+    </section>
+
+    <section class="card spaced">
+      <div class="cardhead">
+        <h2>Resumo mensal</h2>
+        <span class="pill">Valores em R$</span>
+      </div>
+      <div class="tableWrap">
+        <table id="tblResumo"><thead></thead><tbody></tbody></table>
+      </div>
+    </section>
+
+    <section class="grid2">
+      <div class="card">
+        <div class="cardhead">
+          <h2>Meses acima da curva</h2>
+          <span class="pill">Total mensal</span>
+        </div>
+        <div class="tableWrap small">
+          <table id="tblOutliers"><thead></thead><tbody></tbody></table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="cardhead">
+          <h2>Ranking de despesas</h2>
+          <span class="pill" id="countPill">—</span>
+        </div>
+        <div class="tableWrap small">
+          <table id="tblDetalhe"><thead></thead><tbody></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      Modelo esperado em cada planilha: <code>Denominação | YYYY-MM | YYYY-MM | ...</code>
+    </footer>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
