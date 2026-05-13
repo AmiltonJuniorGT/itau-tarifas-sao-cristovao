@@ -7,6 +7,8 @@ const $ = (id) => document.getElementById(id);
  *  URL típica:
  *  https://docs.google.com/spreadsheets/d/<SHEET_ID>/export?format=csv&gid=<GID>
  */
+
+/* CONVERSÃO EM CSV, ORIGEM DRIVE GOOGLE */
 const UNITS = [
   {
     key: "SC",
@@ -22,14 +24,15 @@ const UNITS = [
     key: "CAM",
     name: "Camaçari BA",
     csv: "https://docs.google.com/spreadsheets/d/1d5LLNN1lShh61EHxS93vCuFKzTH3qwcM/export?format=csv&gid=551763344"
-  }
+  },
   {
     key: "GAMA",
     name: "Gama - DF",
-    csv: "https://docs.google.com/spreadsheets/d/1d5LLNN1lShh61EHxS93vCuFKzTH3qwcM/export?format=csv&gid=551763344"
-  }19rLjRfy8HLoYY2o3DaRuNb2uNod20iLm/edit?gid=285444437#gid=285444437
+    csv: "https://docs.google.com/spreadsheets/d/19rLjRfy8HLoYY2o3DaRuNb2uNod20iLm/export?format=csv&gid=285444437"
+  },
 ];
 
+/* FUNÇÕES ORGANIZAÇÃO */
 function parseParams() {
   const p = new URLSearchParams(location.search);
   const u = (p.get("u") || "SC").split(",").map(s => s.trim()).filter(Boolean);
@@ -114,7 +117,6 @@ function setUnitsButtonText() {
   else if (names.length === 1) $("unitsBtnText").textContent = names[0];
   else $("unitsBtnText").textContent = `${names.length} unidades selecionadas`;
 }
-
 function buildUnitsMenu(defaults) {
   const menu = $("unitsMenu");
   menu.innerHTML = "";
@@ -138,7 +140,6 @@ function buildUnitsMenu(defaults) {
         cb.checked = true;
         selectedUnits = [u.key];
       }
-
       setUnitsButtonText();
       reloadAll();
     });
@@ -220,6 +221,7 @@ async function fetchPivot(unit){
 }
 
 // ---------------- consolidate ----------------
+
 function consolidate(unitKeys){
   const pivs = unitKeys.map(k => ({ key:k, piv:PIVOTS[k] })).filter(x => x.piv);
 
@@ -262,6 +264,7 @@ function consolidate(unitKeys){
 }
 
 // ---------------- tables ----------------
+
 function buildResumoTable(months, denoms, matrix){
   const thead = $("tblResumo").querySelector("thead");
   const tbody = $("tblResumo").querySelector("tbody");
@@ -854,7 +857,7 @@ function buildDetailTablePivot(denoms, totals){
   $("countPill").textContent = `${pairs.length.toLocaleString("pt-BR")} denominações (top ${Math.min(maxRows,pairs.length)})`;
 }
 
-// -------------- charts --------------
+// -------------- GRÁFICOS --------------
 function renderCharts(months, totalByMonth, med3, denoms, matrix, mode, selectedUnits){
   // Total
   const ctx1 = $("chartTotal");
@@ -978,6 +981,7 @@ function applyFilters(){
 }
 
 // -------------- presets --------------
+
 function applyPreset(preset){
   if (!CONS || preset === "custom") return;
 
@@ -1287,6 +1291,7 @@ function buildDetailTablePivot(denoms, totals) {
 // -------------------------
 // Charts
 // -------------------------
+
 function renderCharts(months, totalByMonth, med3, denoms, matrix) {
   const ctx1 = $("chartTotal");
   if (chartTotal) chartTotal.destroy();
@@ -1415,9 +1420,11 @@ async function loadDataPivot(csvUrl) {
   setStatus(`OK: ${denoms.length.toLocaleString("pt-BR")} denominações | ${months.length} meses.`);
 }
 
+
 // -------------------------
 // Apply filters (pivot)
 // -------------------------
+
 function applyFilters() {
   const threshold = Number($("threshold").value);
   const selectedDenoms = Array.from($("denoms").selectedOptions).map(o=>o.value);
