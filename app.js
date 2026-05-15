@@ -19,7 +19,7 @@ const UNITS = [
   {
     key: "GAMA",
     name: "Gama - DF",
-    csv: "https://docs.google.com/spreadsheets/d/19rLjRfy8HLoYY2o3DaRuNb2uNod20iLm/gviz/tq?tqx=out:csv&gid=285444437"
+    csv: "https://docs.google.com/spreadsheets/d/1GJ92lsbf-mI-IYGfhCChiXCCnTN50Jln/export?format=csv&gid=405964068"
   }
 ];
 
