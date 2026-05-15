@@ -17,10 +17,10 @@ const UNITS = [
     csv: "https://docs.google.com/spreadsheets/d/1d5LLNN1lShh61EHxS93vCuFKzTH3qwcM/gviz/tq?tqx=out:csv&gid=551763344"
   },
   {
-    key: "GAMA",
-    name: "Gama - DF",
-    csv: "https://docs.google.com/spreadsheets/d/1GJ92lsbf-mI-IYGfhCChiXCCnTN50Jln/export?format=csv&gid=405964068"
-  }
+  key: "GAMA",
+  name: "Gama - DF",
+  csv: "https://docs.google.com/spreadsheets/d/1GJ92lsbf-mI-IYGfhCChiXCCnTN50Jln/gviz/tq?tqx=out:csv&gid=197993527"
+  },
 ];
 
 let selectedUnits = [];
