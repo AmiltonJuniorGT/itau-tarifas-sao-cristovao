@@ -202,6 +202,7 @@ function detectUnitFromText(value){
 
   if(
     text.includes("camacari") ||
+     text.includes("Extrato_Camacari") ||
     text.includes("gt cam") ||
     text.includes("gtcam")
   ){
